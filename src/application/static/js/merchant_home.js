@@ -8,8 +8,4 @@ function attach_handlers() {
 
 $(document).ready(function() {
 	attach_handlers();
-	//update navbar
-	$('.navbar').removeClass('cust').addClass('merch')
-	$('.navbar li a').removeClass('active')
-	$('.merchant-nav').addClass('active')
 });

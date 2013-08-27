@@ -31,4 +31,6 @@ function attachHandlers() {
     });
     attachRemoveHandler();
 }
-$(document).ready(attachHandlers);
+$(document).ready(function() {
+	attachHandlers()
+});

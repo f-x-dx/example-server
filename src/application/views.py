@@ -64,6 +64,7 @@ def merchant_home():
         flash("Merchant currently does not have a loaded inventory.", "warning")
     return render_template('merchant_home.html',
                            format_price=format_price,
+                           merchant_section="true",
                            **locals())
 
 @login_required
@@ -173,7 +174,7 @@ def order(merchant_id):
         return format_price(item.price) + \
             (" per " + item.unitName if item.priceType == "PER_UNIT" else "")
 
-    return render_template("inventory.html", **locals())
+    return render_template("inventory.html", merchant_section="true", **locals())
 
 def warmup():
     """App Engine warmup handler
@@ -705,7 +706,7 @@ def add_reward_merchant():
             reward_type=reward_props.reward_type,
             minimum_price=reward_props.minimum_price, rewards=rewards,
             merchant_id=merchant_id, changed=1,
-            json_inventory=inventory)
+            merchant_section="true", json_inventory=inventory)
 
 #Removes a reward from merchant settings
 def remove_reward_merchant():
@@ -733,7 +734,7 @@ def remove_reward_merchant():
             reward_type=reward_props.reward_type,
             minimum_price=reward_props.minimum_price, rewards=rewards,
             merchant_id=merchant_id, changed=1,
-            json_inventory=inventory)
+            merchant_section="true", json_inventory=inventory)
 
 #Sets reward properties for a merchant
 def set_reward_props():#merchant_id, reward_type, minimum_price)
@@ -781,7 +782,7 @@ def set_reward_props():#merchant_id, reward_type, minimum_price)
             reward_type=reward_props.reward_type,
             minimum_price=reward_props.minimum_price,
             merchant_id=merchant_id, changed=1, rewards=rewards,
-            json_inventory=inventory)
+            merchant_section="true", json_inventory=inventory)
 
 #Show current reward properties
 def show_reward_props(merchant_id):
@@ -810,4 +811,4 @@ def show_reward_props(merchant_id):
             reward_type=reward_props.reward_type,
             minimum_price=reward_props.minimum_price, rewards=rewards,
             merchant_id=merchant_id, changed=0,
-            json_inventory=inventory)
+            merchant_section="true", json_inventory=inventory)

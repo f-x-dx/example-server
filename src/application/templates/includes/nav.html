@@ -1,4 +1,6 @@
-<div class="navbar navbar-inverse navbar-fixed-top">
+{% block content %}
+<script type="text/javascript">console.log("id: {{ merchant_id }}")</script>
+<div class="navbar navbar-inverse navbar-fixed-top {% if merchant_section %}merch{% else %}cust{% endif %}">
   <div class="navbar-inner">
     <div class="container">
       <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -10,13 +12,15 @@
       <div class="nav-collapse">
         <ul class="nav right">
           <li>
-            <a href="{{ url_for('customer_home') }}" class="active customer-nav">View as Customer</a>
+            <a href="{{ url_for('customer_home') }}" class="customer-nav {% if merchant_section %}{% else %}active{% endif %}">View as Customer</a>
           </li>
           <li>
-            <a href="{{ url_for('merchant_home') }}" class="merchant-nav">View as Merchant</a>
+            <a href="{{ url_for('merchant_home') }}" class="merchant-nav {% if merchant_section %}active{% endif %}">View as Merchant</a>
           </li>
         </ul>
       </div><!--/.nav-collapse -->
     </div><!-- /.navbar .container -->
   </div><!-- /.navbar-inner -->
 </div><!-- /navbar -->
+
+{% endblock content %}
