@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block style_block %}
+<style type="text/css">
+  table.table { width: 60%; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<a class="btn btn-primary" href="{{  url_for('show_qr_code')  }}"
+   style="width:100px;float:right">
+  Pay
+</a>
+<a class="btn btn-primary" href="{{  url_for('get_pebble_token')  }}"
+   style="width:100px;float:right">
+  See Pebble Token
+</a>
+<h1 id="">Your Account</h1>
+<div>
+  <dl>
+    <dt>My Merchants</dt>
+    {% if linked_merchants %}
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Merchant</th>
+          <th>Credit Card</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for merchlink in linked_merchants %}
+        <tr>
+          <td>{{ merchlink.get_merchant().name }}</td>
+          <td>*{{ merchlink.last_four }}</td>
+          <td><form method="post" action="{{ url_for('remove_cc',
+                                          merchant_id=merchlink.merchant.get().id) }}">
+              <button class="btn">Remove</button>
+            </form>
+          </td>
+          <td><form action="{{ url_for('order',
+                            merchant_id=merchlink.merchant.get().id) }}">
+              <button class="btn">Order Ahead</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% else %}
+    <dd>No Linked Merchants</dd>
+    {% endif %}
+    <p>
+      <a class="btn btn-primary" id="relink-cc" href="{{ url_for('list_merchants')  }}">
+        Order from a new Merchant
+      </a>
+    </p>
+    <dt>Recent Payments</dt>
+    {% if payments %}
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Amount</th>
+          <th>Merchant</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for payment in payments %}
+        <tr>
+          <td>{{ payment.time_made }}</td>
+          <td>{{ format_price(payment.amount) }}</td>
+          <td>{{ payment.merchant.get().name }}</td>
+          <td>
+            <form action="{{ url_for('order_page', order_id=payment.order.id()) }}">
+              <button class="btn">View Order</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <dd>No Recent Payments</dd>
+    {% endif %}
+
+    <dt>Reward Points</dt>
+    {% if linked_merchants %}
+    <ul class="dropdown-menu" role="menu">
+      {% for merch_link in linked_merchants %}
+      <li>
+        <a tabindex="-1" href=
+           "{{url_for('show_reward_points',
+            merchant_id=merch_link.merchant.get().id)}}">
+          {{merch_link.get_merchant().name}}
+        </a>
+      </li>
+      {% endfor %}
+      {% else %}
+      <dd>No merchant links</dd>
+      {% endif %}
+  </dl>
+
+</div>
+
+{% endblock %}

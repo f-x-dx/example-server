@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block style_block %}
+<style type="text/css">
+  table.table { width: 60%; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div>
+  {% if merchant %}
+  <p>
+    <a class="btn btn-primary" id="link-merchant-btn"
+       href="{{ login_url }}">
+      Link another merchant
+    </a>
+    <a class="btn btn-primary" id="unlink-merchant-btn"
+       href="{{ url_for('unlink_merchant') }}">
+      Unlink merchant
+    </a>
+    <a class="btn btn-primary" id="load-inventory-btn"
+       href="{{ url_for('load_inventory') }}">
+      {% if merchant.inventory %}
+      Reload inventory
+      {% else %}
+      Load inventory
+      {% endif %}
+    </a>
+    <a class="btn btn-primary" id="view-inventory-btn"
+       href="{{ url_for('order', merchant_id=merchant.id) }}">
+      View Inventory
+    </a>
+    <a class="btn btn-primary" id="show_reward_props_btn"
+       href="{{ url_for('show_reward_props', merchant_id=merchant.id) }}">
+      Show reward settings
+    </a>
+  </p>
+  <dl>
+    <dt>Merchant Name</dt>
+    <dd> {{ merchant.name }} </dd>
+    <dt>Merchant ID</dt>
+    <dd> {{ merchant.id }} </dd>
+    <dt>Merchant Access Token</dt>
+    <dd> {{ merchant.access_token }} </dd>
+  </dl>
+  {% else %}
+  <p>
+    <a class="btn btn-primary" id="link-merchant-btn" href="{{ login_url }}">
+      Link Merchant
+    </a>
+  </p>
+  {% endif %}
+</div>
+{% if payments and merchant %}
+
+<h1 id="">Payments</h1>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Amount</th>
+      <th>Customer</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for payment in payments %}
+    <tr>
+      <td>{{ payment.time_made }}</td>
+      <td>{{ format_price(payment.order.get().total) }}</td>
+      <td>{{ payment.order.get().customer_name }}</td>
+      <td>
+        <form action="{{ url_for('order_page', order_id=payment.order.id()) }}">
+          <button class="btn">View Order</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+<dd>No Recent Payments</dd>
+{% endif %}
+</dl>
+
+
+{% endblock content %}
+
+{% block tail_script %}
+<script src="/static/js/merchant_home.js">
+  {% endblock %}

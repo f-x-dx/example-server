@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block style_block %}
+<style type="text/css">
+    table.table { width: 60%; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1>All Merchants</h1>
+<div>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Merchant</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for merchant in all_merchants %}
+            <tr>
+                <td>{{ merchant.name }}</td>
+                <td><form action="{{ url_for('order',
+                        merchant_id=merchant.id) }}">
+                        <button class="btn">Order Ahead</button> 
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

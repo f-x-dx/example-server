@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block tail_script %}
+<script src="/static/js/jquery.qrcode.min.js"></script>
+<script>
+  var div = $("<div class='pagination-centered' id='qrcode_div'></div>");
+  div.appendTo($("body"));
+  $("#qrcode_div").ready(function() { 
+    $("#qrcode_div").qrcode("{{ qr_code }}");
+  });
+</script>
+{% endblock %}

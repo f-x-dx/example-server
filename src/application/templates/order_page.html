@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<dl>
+  <dt>Merchant Name</dt>
+  <dd> {{ order.merchant.get().name }} </dd>
+  <dt>Customer Name</dt>
+  <dd> {{ order.customer_name }} </dd>
+  <dt>Created Time</dt>
+  <dd> {{ order.created_time}} </dd>
+  <dt>Pickup Time</dt>
+  <dd> {{ order.pickup_time}} </dd>
+  <dt>Order Number</dt>
+  <dd> {{ order.order_number }} </dd>
+  <dt>Completed</dt>
+  <dd> {{ order.completed }} </dd>
+</dl>
+
+{{ order_html | safe }}
+
+{% endblock content %}

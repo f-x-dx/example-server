@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script type="text/javascript">
+  var text_div = $("<div>Points accumulated:</div>");
+  var rewards_div = $("<div>{{rewards}}</div>");
+  text_div.appendTo($("body"));
+  rewards_div.appendTo($("body"));
+</script>
+{% endblock %}

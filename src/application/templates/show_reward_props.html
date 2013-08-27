@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block head_script %}
+<script type="text/javascript">
+  //checks whether form values are valid
+  function checkForm() {
+    if(! ($("#amount_button").prop("checked") || 
+      $("#order_button").prop("checked") ||
+      $("#off_button").prop("checked")) ) 
+    {
+      alert("Please select a reward type");
+      return false;
+    }
+    var min = parseInt($("#min_price_in").val(), 10); 
+    if(isNaN(min) || min < 0)
+    {
+      alert("Minimum price must be a positive integer");
+      return false;
+    }
+    return true;
+  }
+
+  
+  //this will be called when user tries to add a new reward.
+  //Do some bounds checking and if it's all ok we set the name of the 
+  //reward item
+  function addRewardSubmit() 
+  {
+    //check that cost is nonnegative
+    var reward_cost = parseInt($("#reward_cost").val());
+    if(isNaN(reward_cost) || reward_cost < 0)
+    {
+      alert("reward_cost must be a nonnegative integer");
+      return false;
+    } 
+
+    //set reward_name
+    $("#reward_name").val(
+      $("#select_rewards").children("option").filter(":selected").text());
+
+    return true;
+  }
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div id="change_div"></div>
+<form action="../set_reward_props" method="POST" onSubmit="return checkForm();">
+  <h4> Reward Settings </h4>
+  Type: 
+  <br>
+  <input id="amount_button" type="radio" name="reward_type" value="1">
+    Points by amount spent(1 point per cent spent)
+  <br>
+  <input id="order_button" type="radio" name="reward_type" value="2">
+    Points by number of orders(1 point per order)
+    <br>
+  <input id="off_button" type="radio" name="reward_type" value="0">
+    No rewards
+    <br>
+  Minimum cost of order for points(if by order):
+  <input id="min_price_in" type="text" name="minimum_price" 
+    value="{{minimum_price}}">
+  <input type="hidden" name="merchant_id" value="{{merchant_id}}">
+  <br>
+  <input type="submit" value="Submit" >
+</form>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Rewards</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if rewards %}
+      {% for reward in rewards %}
+      <tr>
+        <td>
+          Free {{ reward.name }} 
+          {% if reward.cyclic %}
+          every
+          {% else %}
+          at 
+          {% endif %}
+          {{reward.cost}} point(s) 
+          <form action="{{url_for('remove_reward_merchant')}}" method="POST"> 
+            <input type="hidden" name="reward_key" 
+                value="{{reward.key.urlsafe()}}">
+            <input type="hidden" name="merchant_id" value="{{merchant_id}}">
+            <input type="submit" onclick="convert_key_to_json" value="Remove">
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    {% else %}
+    <tr>
+      <td>
+        No rewards entered yet
+      </td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+
+<h4> Add new reward </h4>
+<form action="{{ url_for('add_reward_merchant') }}" 
+    onSubmit="return addRewardSubmit();" method="POST">
+  <select id="select_rewards" name="item_id"></select>
+  <br>
+  <input id="reward_cyclic" type="checkbox" name="cyclic"> 
+    Repeating(ie. reward at 10, 20, 30, ..)
+  <br>
+  Points needed:  
+  <input id="reward_cost" type="text" name="cost">
+  <input id="reward_name" type="hidden" name="name">
+  <input type="hidden" name="merchant_id" value="{{merchant_id}}">
+  <input type="submit" value="Submit">
+</form>
+
+{% endblock %}
+
+
+{% block tail_script %}
+
+<script type="text/javascript">
+
+{% if changed is defined %}
+  {% if changed %}
+    $("#change_div").text("Success!").css("color", "green");
+  {% endif %}
+{% endif %}
+
+  //initiate radio buttons
+  function initRadioButtons()
+  {
+    {% if reward_type == 0 %}
+    $("#off_button").prop("checked", true);
+    {% elif reward_type == 1 %}
+    $("#amount_button").prop("checked", true);
+    {% elif reward_type == 2 %}
+    $("#order_button").prop("checked", true);
+    {% endif %}
+  }
+
+  /*
+   * Gets items for select element. Should be loaded when document is ready
+   * Items are sorted
+   */
+  function getItems()
+  {
+    //get the list of item ids for selected category
+    var inventory = {{ json_inventory|safe }};
+    //get items
+    var items = new Array();
+    for(key in inventory)
+    {
+      items.push(inventory[key]);
+    }
+    //sort them by item names
+    items.sort(function(a, b) { 
+      if(a["name"] > b["name"]) return 1;
+      if(a["name"] == b["name"]) return 0;
+      else return -1;
+    });
+
+    for(var i = 0; i < items.length; i++)
+    {
+      $("#select_rewards").append("<option value=" + items[i]["id"] + 
+          ">" + items[i]["name"] + "</option>");
+    }
+  }
+
+  //add functions to ready
+$("document").ready(function() {
+    initRadioButtons();
+    getItems(); });
+
+</script>
+
+{% endblock %}

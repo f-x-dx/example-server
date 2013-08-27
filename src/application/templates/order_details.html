@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="cart">
+  {% if order_template %}
+      {{ order_template|safe }}
+  {% endif %}
+</div>
+
+<h1>Order Details</h1>
+
+<div class="tab-pane active" id="all">
+  <form id="customer-form" class="well form-horizontal" action="placeOrder()">
+    <div class="row-fluid">
+        <div class="span6" id="order_id">
+            <p>Your Order Number:</p>
+      </div>
+        <p>{{ order_number }}</p>
+    </div>
+    <div class="row-fluid">
+      <div class="span6">Name On Order:</div>
+      <input type="text" id="name">
+    </div>
+    <div class="row-fluid">
+      <div class="span6">Pick Up Time:</div>
+      <input type="time" id="pickup-time">
+      <input type="date" id="pickup-date">
+    </div>
+    <div class="row-fluid">
+      <button id="submit_btn" class="btn btn-primary" type="button" onclick="placeOrder()">
+        Place Order!
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
+
+{% block tail_script %}
+<script type="text/javascript">
+    function nextPage(error, data) {
+        document.location = "/pay/{{ merchant_id }}";
+        return;
+    }
+    function placeOrder() {
+        if($("#name").val() == "") {
+            alert("Please enter your name.");
+            return;
+        }
+        var dateVal = $("#pickup-date").val();
+        var timeVal = $("#pickup-time").val();
+        if (dateVal != "" && timeVal != "") {
+            var pickup_timestamp = Date.parse(dateVal + " " + timeVal);
+            if (pickup_timestamp > Date.now()) {
+                //TODO post this info and return
+                // Returns unix timestamp
+                var obj = {"pickup_timestamp": Math.floor(pickup_timestamp / 1000),
+                           "name": $("#name").val()}
+                send('POST', '/merchant/{{ merchant_id }}/place_order',
+                     {}, obj, nextPage)
+            }
+            return;
+        }
+        alert("Please enter a valid date and time");
+        return;
+    }
+
+    $(document).ready(function () {
+        var d = new Date()
+        $("#pickup-time").val((d.getHours() + 1) % 24 + ":00")
+        $("#pickup-date").val(d.toISOString().slice(0,10))
+    })
+</script>
+<script src="/static/js/inventory.js"></script>
+{% endblock %}

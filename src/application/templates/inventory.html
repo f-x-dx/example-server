@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% macro render_item(item_id) -%}
+{% set item = items[item_id] %}
+<tr>
+  <td>{{ item.name }}</td>
+  <td>{{ format_item(item) }}</td>
+  <td>
+    <div class="input-append input-prepend">
+      <input class="input-mini" id="input-{{ item_id }}" type="text">
+      {% if item.priceType == "PER_UNIT" %}
+      <span class="add-on">{{ item.unitName }}(s)</span>
+      {% endif %}
+      <button class="btn btn-add" type="button" id="{{ item_id }}">Add</button>
+    </div>
+  </td>
+</tr>
+{%- endmacro %}
+
+{% macro render_category(item_id_list) -%}
+<table class="table">
+  <tr>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Quantity</th>
+  </tr>
+  {% for item_id in item_id_list %}
+  {{ render_item(item_id) }}
+  {% endfor %}
+</table>
+{%- endmacro %}
+
+
+{% block content %}
+
+<div id="cart">
+  {% if order_template %}
+      {{ order_template|safe }}
+  {% endif %}
+</div>
+
+<h1>Inventory</h1>
+<ul class="nav nav-tabs" id="categories-tab">
+  <li class="active"><a href="#all" data-toggle="tab">All</a></li>
+  {% for category_name in categories.keys() %}
+  <li><a href="#tab-{{ loop.index }}" data-toggle="tab">{{ category_name }}</a></li>
+  {% endfor %}
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="all">
+    {{ render_category(items.keys()) }}
+  </div>
+  {% for item_id_list in categories.values() %}
+  <div class="tab-pane" id="tab-{{ loop.index }}">
+    {{ render_category(item_id_list) }}
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block tail_script %}
+<script type="text/javascript">
+  var merchantId = "{{ merchant.id }}"
+</script>
+<script src="/static/js/inventory.js"></script>
+{% endblock %}
