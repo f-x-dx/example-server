@@ -1,9 +1,15 @@
 // Button handlers
 
 function attach_handlers() {
-    $("#link-merchant-btn").click(function () {
-        window.location.href = "";
-    });
+  $("#link-merchant-btn").click(function () {
+      window.location.href = "";
+  });
 }
 
-$(document).ready(attach_handlers);
+$(document).ready(function() {
+	attach_handlers();
+	//update navbar
+	$('.navbar').removeClass('cust').addClass('merch')
+	$('.navbar li').removeClass('active')
+	$('.merchant-nav').addClass('active')
+});
