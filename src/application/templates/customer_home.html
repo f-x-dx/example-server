@@ -1,22 +1,17 @@
 {% extends "base.html" %}
 
-{% block style_block %}
-<style type="text/css">
-  table.table { width: 60%; }
-</style>
-{% endblock %}
-
 {% block content %}
 
-<a class="btn btn-primary" href="{{  url_for('show_qr_code')  }}"
-   style="width:100px;float:right">
-  Pay
-</a>
-<a class="btn btn-primary" href="{{  url_for('get_pebble_token')  }}"
-   style="width:100px;float:right">
-  See Pebble Token
-</a>
-<h1 id="">Your Account</h1>
+<div class="alert alert-info">This is a customer view of the example app. Once you've linked a merchant, the customer can build an order and pay for it from here. It will then show up in the example Android app.</div>
+<div class="right customer-actions">
+	<a class="btn btn-primary" href="{{  url_for('show_qr_code')  }}">
+	  Pay
+	</a>
+	<a class="btn btn-primary" href="{{  url_for('get_pebble_token')  }}">
+	  See Pebble Token
+	</a>
+</div>
+<h1>Your Account</h1>
 <div>
   <dl>
     <dt>My Merchants</dt>

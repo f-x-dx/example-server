@@ -3,6 +3,6 @@
 $(document).ready(function() {
 	//update navbar
 	$('.navbar').removeClass('merch').addClass('cust')
-	$('.navbar li').removeClass('active')
+	$('.navbar li a').removeClass('active')
 	$('.customer-nav').addClass('active')
 });

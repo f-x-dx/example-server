@@ -10,6 +10,6 @@ $(document).ready(function() {
 	attach_handlers();
 	//update navbar
 	$('.navbar').removeClass('cust').addClass('merch')
-	$('.navbar li').removeClass('active')
+	$('.navbar li a').removeClass('active')
 	$('.merchant-nav').addClass('active')
 });
