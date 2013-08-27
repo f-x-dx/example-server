@@ -529,20 +529,28 @@ def charge():
 #Displays rewards points that a customer has accumulated
 @login_required
 def show_reward_points():
-    merchant = Merchant.query(Merchant.id == merchant_id).get()
     customer = Customer.query(Customer.user == users.get_current_user()).get()
-    merch_link = MerchLink.query(MerchLink.merchant == merchant.key,
-            MerchLink.customer == customer.key)
+    merch_links = customer.get_merchant_links()
+    ret = []
+    if merch_links:
+        for merch_link in merch_links:
+            #If there were no rewards before, set to 0
+            try:
+                merch_link.reward_points
+            except AttributeError:
+                merch_link.reward_points = 0
+                merch_link.put()
+
+            merchant = Merchant.query(Merchant.key == merch_link.merchant).get()
+            ret.append({ "name" : merchant.name,
+                "reward_points" : merch_link.reward_points })
+
     #get rewards
     if not merch_link:
         return render_template("500.html"), 500
-    #If there were no rewards before, set to 0
-    if not hasattr(merch_link, "rewards_points"):
-        merch_link.reward_points = 0
-        merch_link.put()
 
     return render_template("show_reward_points.html",
-            rewards=merch_link.reward_points)
+            merchants=ret)
 
 # Returns list of rewards that should be applied given current customer id,
 # merchant id, and items in the order
@@ -563,7 +571,9 @@ def find_rewards_customer(customer_key, merchant_id, total_amount):
     if not merch_link:
         return []
 
-    if not hasattr(merch_link, "rewards_points"):
+    try:
+        merch_link.rewards_points
+    except:
         merch_link.rewards_points = 0
 
     points = merch_link.rewards_points
@@ -612,7 +622,7 @@ goes through with the order
 def get_rewards_customer():
     qr_code = request.args.get("qr_code")
     merchant_id = request.args.get("merchant_id")
-    total_amount = request.args.get("total_amount")
+    total_amount = int(request.args.get("total_amount"))
 
     customer = Customer.query(Customer.qr_code == qr_code).get()
     if not customer:
