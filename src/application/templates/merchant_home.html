@@ -3,21 +3,30 @@
 {% block content %}
 <div>
   {% if merchant %}
+	<div class="title">
+		<div class="right top15">
+	    <a class="btn" id="link-merchant-btn"
+	       href="{{ login_url }}">
+	      Link Another Merchant
+	    </a>
+	    <a class="btn" id="unlink-merchant-btn"
+	       href="{{ url_for('unlink_merchant') }}">
+	      Unlink Merchant
+	    </a>
+		</div>
+		<h1>{{ merchant.name }}</h1>
+	</div>
+  <p class="merchantInfo">
+    <strong>Merchant ID:</strong> {{ merchant.id }}
+    <strong class="left10">Merchant Access Token:</strong> {{ merchant.access_token }}
+  </p>
   <p>
-    <a class="btn btn-primary" id="link-merchant-btn"
-       href="{{ login_url }}">
-      Link another merchant
-    </a>
-    <a class="btn btn-primary" id="unlink-merchant-btn"
-       href="{{ url_for('unlink_merchant') }}">
-      Unlink merchant
-    </a>
     <a class="btn btn-primary" id="load-inventory-btn"
        href="{{ url_for('load_inventory') }}">
       {% if merchant.inventory %}
-      Reload inventory
+      Reload Inventory
       {% else %}
-      Load inventory
+      Load Inventory
       {% endif %}
     </a>
     <a class="btn btn-primary" id="view-inventory-btn"
@@ -26,17 +35,9 @@
     </a>
     <a class="btn btn-primary" id="show_reward_props_btn"
        href="{{ url_for('show_reward_props', merchant_id=merchant.id) }}">
-      Show reward settings
+      Show Reward Settings
     </a>
   </p>
-  <dl>
-    <dt>Merchant Name</dt>
-    <dd> {{ merchant.name }} </dd>
-    <dt>Merchant ID</dt>
-    <dd> {{ merchant.id }} </dd>
-    <dt>Merchant Access Token</dt>
-    <dd> {{ merchant.access_token }} </dd>
-  </dl>
   {% else %}
   <p>
     <a class="btn btn-primary" id="link-merchant-btn" href="{{ login_url }}">
@@ -47,7 +48,7 @@
 </div>
 {% if payments and merchant %}
 
-<h1 id="">Payments</h1>
+<h2>Payments</h2>
 <table class="table table-bordered table-striped">
   <thead>
     <tr>

@@ -3,15 +3,17 @@
 {% block content %}
 
 <div class="alert alert-info">This is a customer view of the example app. Once you've linked a merchant, the customer can build an order and pay for it from here. It will then show up in the example Android app.</div>
-<div class="right customer-actions">
-	<a class="btn btn-primary" href="{{  url_for('show_qr_code')  }}">
-	  Pay
-	</a>
-	<a class="btn btn-primary" href="{{  url_for('get_pebble_token')  }}">
-	  See Pebble Token
-	</a>
+<div class="title">
+	<div class="right customer-actions top15">
+		<a class="btn btn-primary" href="{{  url_for('show_qr_code')  }}">
+		  Pay
+		</a>
+		<a class="btn btn-primary" href="{{  url_for('get_pebble_token')  }}">
+		  See Pebble Token
+		</a>
+	</div>
+	<h1>Your Account</h1>
 </div>
-<h1>Your Account</h1>
 <div>
   <dl>
     <dt>My Merchants</dt>
@@ -48,7 +50,7 @@
     {% endif %}
     <p>
       <a class="btn btn-primary" id="relink-cc" href="{{ url_for('list_merchants')  }}">
-        Order from a new Merchant
+        Order From a New Merchant
       </a>
     </p>
     <dt>Recent Payments</dt>
