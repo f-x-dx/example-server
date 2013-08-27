@@ -61,7 +61,7 @@ def merchant_home():
         qry = Payment.query(Payment.merchant == merchant.key)
         payments = qry.order(Payment.time_made)
     if not (merchant and merchant.inventory):
-        flash("Merchant currently do not have a loaded inventory.", "info")
+        flash("Merchant currently does not have a loaded inventory.", "warning")
     return render_template('merchant_home.html',
                            format_price=format_price,
                            **locals())
