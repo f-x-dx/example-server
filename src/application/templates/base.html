@@ -17,7 +17,7 @@
     <script src="/static/js/lib/modernizr-{{ modernizer_version }}.min.js"></script>{# Modernizr must be here, above body tag. #}
     {% block head_script %}{# defer-incapable JS block #}{% endblock %}
 </head>
-<body>
+<body class="{% if merchant_section %}merchantBody{% endif %}">
     <div id="header">
         {% include 'includes/nav.html' %} {# pull in navbar #}
     </div>

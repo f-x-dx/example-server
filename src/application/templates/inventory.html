@@ -5,7 +5,7 @@
 <tr>
   <td>{{ item.name }}</td>
   <td>{{ format_item(item) }}</td>
-  <td>
+  {% if not merchant_section %}<td>
     <div class="input-append input-prepend">
       <input class="input-mini" id="input-{{ item_id }}" type="text">
       {% if item.priceType == "PER_UNIT" %}
@@ -13,7 +13,7 @@
       {% endif %}
       <button class="btn btn-add" type="button" id="{{ item_id }}">Add</button>
     </div>
-  </td>
+  </td>{% endif %}
 </tr>
 {%- endmacro %}
 
@@ -22,7 +22,7 @@
   <tr>
     <th>Name</th>
     <th>Price</th>
-    <th>Quantity</th>
+    {% if not merchant_section %}<th>Quantity</th>{% endif %}
   </tr>
   {% for item_id in item_id_list %}
   {{ render_item(item_id) }}

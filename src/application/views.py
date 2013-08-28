@@ -53,6 +53,7 @@ def say_hello(username):
 @login_required
 def merchant_home():
     """List all payments"""
+    base_url = CloverAPI.base_url
     account = Account.get_account()
     merchant = account.get_merchant()
     login_url = CloverAPI.build_auth_url(request.url_root + "clover_callback",
@@ -61,7 +62,7 @@ def merchant_home():
         qry = Payment.query(Payment.merchant == merchant.key)
         payments = qry.order(Payment.time_made)
     if not (merchant and merchant.inventory):
-        flash("Merchant currently does not have a loaded inventory.", "warning")
+        flash("You currently don't have any inventory loaded. Add items from the Clover dashboard and reload your inventory here.", "warning")
     return render_template('merchant_home.html',
                            format_price=format_price,
                            merchant_section="true",
@@ -168,7 +169,36 @@ def order(merchant_id):
     items = merchant.inventory
     categories = merchant.categories
     if (items is None) or (categories is None):
+        flash("Sorry, this merchant doesn't have any items to order.", "error")
+        return redirect(url_for('customer_home'))
+
+    def format_item(item):
+        return format_price(item.price) + \
+            (" per " + item.unitName if item.priceType == "PER_UNIT" else "")
+
+    return render_template("inventory.html", **locals())
+
+@login_required
+def show_inventory(merchant_id):
+    merchant = Merchant.get_by_id(merchant_id)
+
+    if not merchant:
         abort(404)
+
+    customer = Customer.get_current()
+    merch_link = MerchLink.get_merchlink(merchant_id)
+    if merch_link==None:
+        merch_link = MerchLink(merchant=merchant.key, customer=customer.key,
+                pay_token=None)
+        merch_link_key = merch_link.put()
+        customer.linked_merchants.append(merch_link_key)
+        customer.put()
+
+    items = merchant.inventory
+    categories = merchant.categories
+    if (items is None) or (categories is None):
+        flash("Sorry, you don't have any items to view. Try reloading your inventory.", "error")
+        return redirect(url_for('merchant_home'))
 
     def format_item(item):
         return format_price(item.price) + \

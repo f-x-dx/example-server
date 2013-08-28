@@ -45,6 +45,10 @@ app.add_url_rule('/post_cc', 'post_cc',
 app.add_url_rule('/merchant/<merchant_id>/order', 'order',
                  view_func=views.order, methods=['GET'])
 
+# Go to merchant's inventory page (read only)
+app.add_url_rule('/merchant/<merchant_id>/inventory', 'inventory',
+                 view_func=views.show_inventory, methods=['GET'])
+
 # List all merchants for new merchant order ahead
 app.add_url_rule('/merchants', 'list_merchants',
                  view_func=views.list_merchants, methods=['GET'])

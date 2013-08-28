@@ -1,5 +1,5 @@
 {% include 'includes/flash_message.html' %}
-
+{% if not merchant_section %}
 <h2>Order</h2>
 <table class="table">
   <tr>
@@ -34,3 +34,4 @@
     </th>
   </tr>
 </table>
+{% endif %}

@@ -2,6 +2,7 @@
 
 {% block content %}
 <div>
+	<div class="alert alert-success">This is a merchant view of the example app. Once you've linked a merchant, you can see payments from customers in the example app and set rewards.</div>
   {% if merchant %}
 	<div class="title">
 		<div class="right top15">
@@ -21,7 +22,7 @@
     <strong class="left10">Merchant Access Token:</strong> {{ merchant.access_token }}
   </p>
   <p>
-    <a class="btn btn-primary" id="load-inventory-btn"
+    <a class="btn btn-success" id="load-inventory-btn"
        href="{{ url_for('load_inventory') }}">
       {% if merchant.inventory %}
       Reload Inventory
@@ -29,21 +30,24 @@
       Load Inventory
       {% endif %}
     </a>
-    <a class="btn btn-primary" id="view-inventory-btn"
-       href="{{ url_for('order', merchant_id=merchant.id) }}">
+    <a class="btn btn-success" id="view-inventory-btn"
+       href="{{ url_for('inventory', merchant_id=merchant.id) }}">
       View Inventory
     </a>
-    <a class="btn btn-primary" id="show_reward_props_btn"
+    <a class="btn btn-success" id="show_reward_props_btn"
        href="{{ url_for('show_reward_props', merchant_id=merchant.id) }}">
       Show Reward Settings
     </a>
   </p>
   {% else %}
-  <p>
-    <a class="btn btn-primary" id="link-merchant-btn" href="{{ login_url }}">
-      Link Merchant
-    </a>
-  </p>
+	<div class="title">
+		<div class="right top15">
+	    <a class="btn btn-success" id="link-merchant-btn" href="{{ login_url }}">
+	      Link Merchant
+	    </a>
+		</div>
+		<h1>Merchant Home</h1>
+	</div>
   {% endif %}
 </div>
 {% if payments and merchant %}
@@ -74,8 +78,17 @@
   </tbody>
 </table>
 
-{% else %}
+{% elif merchant %}
 <dd>No Recent Payments</dd>
+{% else %}
+<div class="instructions">Link a merchant to see your inventory here.
+	<ol>
+		<li>Create an app on the <a href="{{ base_url }}/manage" target="_blank">Clover Dashboard</a>. It needs x, y, z permissions. //todo: fill in</li>
+		<li>Copy the App ID and App Secret to <code>views.py</code>. //todo: move to config file.</li>
+		<li><a class="btn btn-success" id="link-merchant-btn" href="{{ login_url }}">
+	      Link Merchant
+	    </a> and install the app.
+</div>
 {% endif %}
 </dl>
 
