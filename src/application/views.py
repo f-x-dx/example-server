@@ -323,10 +323,12 @@ def finish_order(merchant_id):
             {"state": "OPEN"},orderId=uuid)
         total = merch_link.curr_order.total
         for item in merch_link.curr_order.items:
-            c.post("/v2/merchant/{mId}/orders/{orderId}/line_items",
-                {"itemInfo": {"itemId": item.id,
-                                "quantity": item.quantity,
-                                "taxRate": 0}}, orderId=uuid)
+            #TODO support adding for item unit quantity
+            i = 0
+            while i < item.quantity:
+                c.post("/v2/merchant/{mId}/orders/{orderId}/line_items",
+                        {"item": {"id": item.id} , "unitQty" : 1}, orderId=uuid)
+                i += 1
         c.post("/v2/merchant/{mId}/orders/{orderId}/state",
             {"state": "CLOSED"}, orderId=uuid)
         c.post("/v2/merchant/{mId}/orders/{orderId}/total", 
