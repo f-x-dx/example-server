@@ -7,14 +7,14 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </a>
-      <a class="brand">Clover Example App</a>
+      <!-- <a class="brand">Clover Example App</a> -->
       <div class="nav-collapse">
         <ul class="nav right">
           <li>
-            <a href="{{ url_for('customer_home') }}" class="customer-nav {% if merchant_section %}{% else %}active{% endif %}">View as Customer</a>
+            <a href="{{ url_for('customer_home') }}" class="customer-nav {% if merchant_section %}{% else %}active{% endif %}">Customer</a>
           </li>
           <li>
-            <a href="{{ url_for('merchant_home') }}" class="merchant-nav {% if merchant_section %}active{% endif %}">View as Merchant</a>
+            <a href="{{ url_for('merchant_home') }}" class="merchant-nav {% if merchant_section %}active{% endif %}">Merchant</a>
           </li>
         </ul>
       </div><!--/.nav-collapse -->
