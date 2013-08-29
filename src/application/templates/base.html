@@ -29,7 +29,10 @@
     </div><!-- /container -->
     <footer>
         <div id="footer" class="container">
-            {% block footer %}{% endblock %}
+            {% block footer %}
+						<div>Made with Clover APIs — <a class="link" href="https://www.clover.com/developers">Learn More</a></div>
+						<a class="link" href="https://www.clover.com"><div class="logo"></div></a>
+						{% endblock %}
         </div><!-- /footer -->
     </footer>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/{{ jquery_version }}/jquery.min.js"></script>
