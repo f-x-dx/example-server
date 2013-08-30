@@ -42,6 +42,7 @@ APP_SECRET = "4d69f86c-0758-6951-3f46-f08baa98e758"
 APP_ID = "7JQ49Q1NGNFZ6"
 
 TENDER_KEY = "com.clover.cloverexample"
+TENDER_NAME = "Example Tender"
 
 def home():
     return redirect(url_for('customer_home'))
@@ -120,13 +121,28 @@ def clover_callback():
             flash("Could not update merchant's properties, there may "
                   "be an error with the access token", "error")
 
+        #Create system tender if we haven't seen it before
+        #If it's already made, it won't do anything
+        if not hasattr(clover_callback, "system_tender_created"):
+            try:
+                c.post("/v2/tenders", 
+                    { "tender" : {
+                        "label" : TENDER_NAME,
+                        "labelKey" : TENDER_KEY 
+                    }})
+                clover_callback.system_tender_created = True
+            except:
+                #Ignore if it's already taken since this might be called
+                #again if server restarts
+                pass
+        
         if not merchant.created_tender:
             # Create merchant tender
             try:
                 c.post("/v2/merchant/{mId}/tenders",
                        {"tender": {"opensCashDrawer": False,
                                    "enabled": True,
-                                   "label": "Example Tender",
+                                   "label": TENDER_NAME,
                                    "labelKey": TENDER_KEY}})
                 merchant.created_tender = True
                 flash("Created custom merchant tender", "success")
