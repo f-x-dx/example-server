@@ -15,7 +15,7 @@
 	<h1>Your Account</h1>
 </div>
 <div>
-    <h3>Recent Merchants</h3>
+    <h2>Recent Merchants</h2>
     {% if linked_merchants %}
     <table class="table table-bordered table-striped">
       <thead>
@@ -52,7 +52,7 @@
         Order From a New Merchant
       </a>
     </p>
-    <h3>Recent Payments</h3>
+    <h2>Recent Payments</h2>
     {% if payments %}
     <table class="table table-bordered table-striped">
       <thead>
@@ -82,7 +82,7 @@
     <p>No Recent Payments</p>
     {% endif %}
 
-    <h3>My Reward Points</h3>
+    <h2>My Reward Points</h2>
     {% if linked_merchants %}
     <ul class="dropdown-menu" role="menu">
       {% for merch_link in linked_merchants %}

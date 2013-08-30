@@ -8,13 +8,13 @@
       $("#order_button").prop("checked") ||
       $("#off_button").prop("checked")) ) 
     {
-      alert("Please select a reward type");
+			flash("Please select a reward type", "error");
       return false;
     }
     var min = parseInt($("#min_price_in").val(), 10); 
     if(isNaN(min) || min < 0)
     {
-      alert("Minimum price must be a positive integer");
+			flash("Minimum price must be a positive integer", "error");
       return false;
     }
     return true;
@@ -30,7 +30,7 @@
     var reward_cost = parseInt($("#reward_cost").val());
     if(isNaN(reward_cost) || reward_cost < 0)
     {
-      alert("reward_cost must be a nonnegative integer");
+      flash("Please add points needed for your new reward.", "error");
       return false;
     } 
 
@@ -45,32 +45,37 @@
 
 {% block content %}
 
-<div id="change_div"></div>
 <form action="../set_reward_props" method="POST" onSubmit="return checkForm();">
-  <h4> Reward Settings </h4>
-  Type: 
+  <h1>Rewards </h1>
+  <h2>Settings </h2>
+  <p>Type:
   <br>
   <input id="amount_button" type="radio" name="reward_type" value="1">
-    Points by amount spent(1 point per cent spent)
+  <label for="amount_button">Points by amount spent (1 point per cent spent)</label>
   <br>
   <input id="order_button" type="radio" name="reward_type" value="2">
-    Points by number of orders(1 point per order)
+    <label for="order_button">Points by number of orders (1 point per order)</label>
     <br>
   <input id="off_button" type="radio" name="reward_type" value="0">
-    No rewards
+    <label for="off_button">No rewards</label>
     <br>
-  Minimum cost of order for points(if by order):
-  <input id="min_price_in" type="text" name="minimum_price" 
+  Minimum cost of order for points (if by order):
+  <input id="min_price_in" type="text" name="minimum_price" class="short"
     value="{{minimum_price}}">
   <input type="hidden" name="merchant_id" value="{{merchant_id}}">
   <br>
-  <input type="submit" value="Submit" >
+  <input class="btn" type="submit" value="Save" >
+</p>
 </form>
 
+<h2>Current Rewards</h2>
 <table class="table table-bordered">
   <thead>
     <tr>
-      <th>Rewards</th>
+      <th>Name</th>
+      <th>Actions</th>
+    </tr>
+    <tr>
     </tr>
   </thead>
   <tbody>
@@ -85,13 +90,15 @@
           at 
           {% endif %}
           {{reward.cost}} point(s) 
+        </td>
+				<td>
           <form action="{{url_for('remove_reward_merchant')}}" method="POST"> 
             <input type="hidden" name="reward_key" 
                 value="{{reward.key.urlsafe()}}">
             <input type="hidden" name="merchant_id" value="{{merchant_id}}">
-            <input type="submit" onclick="convert_key_to_json" value="Remove">
+            <input class="btn" type="submit" onclick="convert_key_to_json" value="Remove">
           </form>
-        </td>
+				</td>
       </tr>
       {% endfor %}
     {% else %}
@@ -99,24 +106,28 @@
       <td>
         No rewards entered yet
       </td>
+      <td>
+      </td>
     </tr>
     {% endif %}
   </tbody>
 </table>
 
-<h4> Add new reward </h4>
+<h2>Add New Reward </h2>
 <form action="{{ url_for('add_reward_merchant') }}" 
     onSubmit="return addRewardSubmit();" method="POST">
+		<p>
   <select id="select_rewards" name="item_id"></select>
-  <br>
   <input id="reward_cyclic" type="checkbox" name="cyclic"> 
-    Repeating(ie. reward at 10, 20, 30, ..)
+  <label for="reward_cyclic">Repeating (i.e. reward at 10, 20, 30, ..)</label>
   <br>
   Points needed:  
-  <input id="reward_cost" type="text" name="cost">
+  <input id="reward_cost" type="text" name="cost" class="short">
   <input id="reward_name" type="hidden" name="name">
   <input type="hidden" name="merchant_id" value="{{merchant_id}}">
-  <input type="submit" value="Submit">
+	<br>
+  <input class="btn" type="submit" value="Save">
+</p>
 </form>
 
 {% endblock %}
@@ -128,7 +139,7 @@
 
 {% if changed is defined %}
   {% if changed %}
-    $("#change_div").text("Success!").css("color", "green");
+		flash("Settings saved", "success")
   {% endif %}
 {% endif %}
 

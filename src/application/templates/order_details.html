@@ -13,9 +13,9 @@
   <form id="customer-form" class="well form-horizontal" action="placeOrder()">
     <div class="row-fluid">
         <div class="span6" id="order_id">
-            <p>Your Order Number:</p>
+        Your Order Number:
       </div>
-        <p>{{ order_number }}</p>
+       <span>{{ order_number }}</span>
     </div>
     <div class="row-fluid">
       <div class="span6">Name On Order:</div>
@@ -44,7 +44,7 @@
     }
     function placeOrder() {
         if($("#name").val() == "") {
-            alert("Please enter your name.");
+            flash("Please enter your name.", "error");
             return;
         }
         var dateVal = $("#pickup-date").val();
@@ -61,7 +61,7 @@
             }
             return;
         }
-        alert("Please enter a valid date and time");
+        flash("Please enter a valid date and time.", "error");
         return;
     }
 

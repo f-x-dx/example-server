@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>Add Credit Card For Merchant</h3>
+<h1>Add Credit Card For Merchant</h1>
 <div id="cc_div" class="modal-body">
     <form id="customer-form" name="cc_form" class="well form-horizontal">
         <div class="row-fluid"> <div class="span6"> Name:</div> <input type="text" id="name"></div>
@@ -19,7 +19,7 @@
                     {% endfor %}
                 </select>
         </div>
-    <div class="row-fluid"><button id="submit_btn" class="btn" type="button" onclick="sendscript()">Submit</button></div>
+    <div class="row-fluid"><div class="span6"></div><button id="submit_btn" class="btn btn-primary" type="button" onclick="sendscript()">Save</button></div>
    </form>
 <div class="modal" id="lodaing-gif"></div>
 </div>

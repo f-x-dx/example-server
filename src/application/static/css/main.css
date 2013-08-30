@@ -1,51 +1,107 @@
 
 /* Main stylesheet */
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic,500,500italic,700,700italic')
 
 /* @section forms */
 .btn.cancel { margin-left: 0.5rem; }
 .nowrap { white-space: nowrap; }
 
 /* Your customizations here */
-.modal {
-    display:    none;
-    height:     100%;
-    width: 150%;
-    position:absolute;
-    left:0;
-    top:0;
-    right:0;
-    border-style:hidden;
-    background: #FFFFFF
-                url('../img/loading.gif') 
-                50% 50% 
-                no-repeat;
+.modal-body {
+	padding:0px;
+}
+
+body {
+	background-color: rgba(245, 245, 245, 1);
+	font-family: 'Roboto', sans-serif;
+	font-size: 62.5%;
+	font-weight: 300;
 }
 
 .merchantBody {
-	background: #fcfffc;
+	background: rgba(252, 255, 252, 1);
 }
 
-.navbar-inverse .brand, .navbar-inverse .nav>li>a {
-	color: #ddd;
-}
-
-.navbar-inverse .nav>li>a {
-	font-size: 15px;
-}
-
-.navbar-inverse .nav>li>a.active {
-	color: #fff;
-	background-color:rgba(255,255,255,0.2);
+.navbar {
+	margin-bottom:100px;
 }
 
 .navbar .nav {
-	float:right;
-	margin:0;
+	margin:0 auto;
+	float:none;
+	display:inline-block;
+}
+
+.navbar-inverse .navbar-inner {
+	min-height: 85px;
+	background-color: rgba(245, 245, 245, 0.8);
+	background-image: none;
+	border-color: transparent;
+	border-top: 15px solid rgba(50, 50, 50, 1);
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+}
+
+.merch .navbar-inner {
+	border-top: 15px solid rgba(144, 178, 128, 1);
+	background: rgba(252, 255, 252, 0.8);
+}
+
+.nav-collapse {
+	text-align: center;
+}
+
+.navbar-inverse .brand, .navbar-inverse .nav>li>a {
+	color: #000;
+	font-size: 1.6em;
+}
+
+.navbar-inverse .nav>li>a {
+	display: table-cell;
+	height: 30px;
+	padding: 30px 40px;
+	text-align: center;
+	width: 120px;
+	text-shadow: none;
+}
+
+.navbar-inverse .nav>li>a:hover {
+	color:#111;
+}
+
+.navbar-inverse .nav>li>a.active {
+/*	color: #fff;
+	background-color:rgba(255,255,255,0.2);*/
+	border-bottom: 1px solid rgba(110, 110, 110, 1);
+}
+
+.navbar-inverse.merch .nav>li>a.active {
+	border-bottom: 1px solid rgba(56, 123, 43, 1);
+}
+
+#maincontent {
+	margin-top: 100px;
+}
+
+#footer {
+	text-align: center;
+	font-size: 1.4em;
+	height: 60px;
+	margin-top: 20px;
+}
+
+#footer .logo {
+	background-image: url(/static/img/clover-logo.png);
+	background-size: 13px 13px;
+	height: 13px;
+	width: 13px;
+	margin: 5px auto;
 }
 
 .title {
-	padding: 10px;
-	background: #eee;
+/*	padding: 10px;
+	background: #eee;*/
 }
 
 .instructions {
@@ -57,23 +113,77 @@
 }
 
 h1 {
-	text-shadow: 0px 2px 0px #fff;
+	font-size: 4em;
+	font-weight: 300;
+	margin-bottom: 10px;
+	margin-top: 0;
 }
 
-.merch .navbar-inner {
-  background-color: #2c5c4c; /* fallback color, place your own */
+h2 {
+	color: rgba(150, 150, 150, 1);
+	font-size: 2.8em;
+	font-weight: 300;
+	margin-bottom: 10px;
+	margin-top: 0;
+}
 
-  /* Gradients for modern browsers, replace as you see fit */
-  background-image: -moz-linear-gradient(top, #468847, #357736);
-  background-image: -ms-linear-gradient(top, #468847, #357736);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#468847), to(#357736));
-  background-image: -webkit-linear-gradient(top, #468847, #357736);
-  background-image: -o-linear-gradient(top, #468847, #357736);
-  background-image: linear-gradient(top, #468847, #357736);
-  background-repeat: repeat-x;
+h3 {
+	font-size: 2.2em;
+	font-weight: 300;
+	margin-bottom: 10px;
+	margin-top: 0;
+}
 
-  /* IE8-9 gradient filter */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#468847', endColorstr='#357736', GradientType=0);
+h4 {
+	font-size: 1.8em;
+	font-weight: 500;
+	margin-bottom: 10px;
+	margin-top: 0;
+}
+
+hr {
+	margin: 100px 0;
+}
+
+p {
+	font-size: 1.6em;
+	line-height: 140%;
+	margin-top: 0;
+	margin-bottom: 60px;
+}
+
+span, ol {
+	font-size: 1.6em;
+}
+
+.link {
+	color: rgba(56, 123, 43, 1);
+	font-weight: 500;
+	text-decoration: none;
+}
+
+.link:visited {
+	color: rgba(144, 178, 128, 1);
+	font-weight: 500;
+	text-decoration: none;
+}
+
+.link:visited {
+	color: rgba(144, 178, 128, 1);
+	font-weight: 500;
+	text-decoration: none;
+}
+
+.link:hover {
+	color: rgba(56, 123, 43, 1);
+	font-weight: 500;
+	text-decoration: underline;
+}
+
+.link:active {
+	color: rgba(0, 0, 0, 1);
+	font-weight: 500;
+	text-decoration: underline;
 }
 
 .right {
@@ -99,6 +209,36 @@ h1 {
 
 table.table {
 	width: 60%;
+	font-size: 1.6em;
+}
+
+.nav-tabs, .well {
+	font-size: 1.6em;
+}
+
+.well .row-fluid {
+	margin: 10px 0;
+}
+
+.well {
+	background-color: rgba(250, 250, 250, 0.8);
+}
+
+label {
+	display: inline-block;
+}
+
+input[type="radio"], input[type="checkbox"] {
+	margin: 0;
+}
+
+input[type="text"].short {
+	width: 80px;
+}
+
+.alert {
+	font-size: 1.5em;
+	line-height: 1.5em;
 }
 
 /* When the body has the loading class, we turn
@@ -112,4 +252,14 @@ table.table {
    modal element will be visible */
 body.loading .modal {
     display: block;
+}
+
+@media only screen and (min--moz-device-pixel-ratio: 2),
+only screen and (-o-min-device-pixel-ratio: 2/1),
+only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (min-device-pixel-ratio: 2) {
+	#footer .logo {
+	    background: url(/static/img/clover-logo@2x.png) no-repeat;
+	    background-size: 13px 13px;
+	}
 }
