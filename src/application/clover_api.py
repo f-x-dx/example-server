@@ -2,6 +2,7 @@ import requests
 import urllib
 import json
 import re
+import config
 
 class CloverResponseObject(dict):
     """Object to encapsulate response JSON."""
@@ -13,9 +14,10 @@ class CloverResponseObject(dict):
 class CloverAPI(object):
     """CloverAPI object for making API calls to Clover's server."""
 
+    base_url = config.base_url
     #base_url = "http://localhost:9000" # local
     # base_url = "https://stg1.dev.clover.com" #staging
-    base_url = "https://www.clover.com" # production
+    #base_url = "https://www.clover.com" # production
     # TODO: change back to production before release
 
     path_match = re.compile("\{([a-zA-Z]*)\}")

@@ -33,16 +33,18 @@ from flask import jsonify, json
 import uuid
 from datetime import datetime, timedelta
 
+import config
+
 # Flask-Cache (configured to use App Engine Memcache API)
 cache = Cache(app)
 
 # TODO change these to prod app secret and id when making prod
 
-APP_SECRET = "4d69f86c-0758-6951-3f46-f08baa98e758"
-APP_ID = "7JQ49Q1NGNFZ6"
+APP_SECRET = config.APP_SECRET
+APP_ID = config.APP_ID
 
-TENDER_KEY = "com.clover.cloverexample"
-TENDER_NAME = "Example Tender"
+TENDER_KEY = config.TENDER_KEY
+TENDER_NAME = config.TENDER_NAME
 
 def home():
     return redirect(url_for('customer_home'))
