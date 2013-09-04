@@ -425,7 +425,6 @@ def post_cc():
         auth_token = merchant.access_token
         merch_link = MerchLink.query(ndb.AND(MerchLink.merchant==merchant.key,
             MerchLink.customer==Customer.get_current().key)).get()
-        print(merch_link.pay_token)
         if merch_link.pay_token == None:
             user = users.get_current_user()
             merch_link.pay_token = pay_token
@@ -499,10 +498,19 @@ def make_payment(orderId, amount, merch_link):
         payment.put()
         merch_link.put()
 
-    #Change qr code
-    customer = merch_link.customer.get()
-    customer.qr_code = str(uuid.uuid4())
-    customer.put()
+        #Change qr code
+        customer = merch_link.customer.get()
+        customer.qr_code = str(uuid.uuid4())
+        customer.put()
+
+        #Give them points
+        new_points = calculate_reward_points(amount, 
+                RewardProperties.query(
+                    RewardProperties.key == merchant.reward_props).get())
+
+
+        merch_link.rewards_points += new_points
+        merch_link.put()
 
     return resp
 
@@ -619,11 +627,6 @@ def find_rewards_customer(customer_key, merchant_id, total_amount):
     if not merch_link:
         return []
 
-    try:
-        merch_link.rewards_points
-    except:
-        merch_link.rewards_points = 0
-
     points = merch_link.rewards_points
 
     #Get reward properties
@@ -631,7 +634,7 @@ def find_rewards_customer(customer_key, merchant_id, total_amount):
     #get number of points that would be added by this order
     added_points = calculate_reward_points(total_amount, reward_props)
 
-    #return list of rewards as (name, item_id) tuples
+    #return list of rewards as dictionaries of name and item_id 
     ret = []
     #get rewards
     rewards = merchant.get_rewards()
@@ -640,6 +643,7 @@ def find_rewards_customer(customer_key, merchant_id, total_amount):
             #If cyclic, we have to pass another "cycle"
             if points % reward.cost + added_points >= reward.cost:
                 ret.append({ "name" : reward.name, "item_id" : reward.item_id})
+
         else:
             #See if we should add this reward
             if points < reward.cost and points + added_points >= reward.cost:
@@ -663,6 +667,8 @@ def calculate_reward_points(total_amount, reward_props):
     if total_amount >= reward_props.minimum_price:
         return 1
 
+    return 0
+
 """ 
 Returns json representation of rewards that customer will get if he/she 
 goes through with the order
@@ -671,7 +677,7 @@ def get_rewards_customer():
     qr_code = request.args.get("qr_code")
     merchant_id = request.args.get("merchant_id")
     total_amount = int(request.args.get("total_amount"))
-
+    
     customer = Customer.query(Customer.qr_code == qr_code).get()
     if not customer:
         return jsonify(status="error", 
@@ -681,7 +687,7 @@ def get_rewards_customer():
     if not merchant:
         return jsonify(status="error", 
             message = "No merchant found with that id")
-
+    
     rewards = find_rewards_customer(customer.key, merchant_id, total_amount)
 
     return jsonify(status="success", rewards=rewards)
@@ -691,7 +697,6 @@ def apply_rewards_customer():
     #TODO ensure this is sent from someone who's actually authorized to do so
     merchant_id = request.get_json()["merchant_id"]
     order_id = request.get_json()["order_id"]
-    total_amount = request.get_json()["total_amount"]
     #rewards should be json array of "item_id"
     rewards = request.get_json()["rewards"]
 
@@ -699,7 +704,6 @@ def apply_rewards_customer():
     if not merchant:
         return jsonify(status="error", message="No merchant found with that id")
 
-    #DEBUGGING: 
     clover = CloverAPI(access_token=merchant.access_token, 
             merchant_id=merchant_id)
 
@@ -707,20 +711,18 @@ def apply_rewards_customer():
     for reward in rewards:
         #Add the line item
         response = clover.post("/v2/merchant/{mId}/orders/{orderId}/line_items",
-            { "itemInfo" : { "itemId" : reward["item_id"], 
-                "quantity" : reward["quantity"] } },
-            mId = merchant_id, orderId = order_id)
+            { "item" : { "id" : reward["itemId"], 
+                "unitQty" : reward["unitQty"] } }, orderId=order_id)
 
-        for line_item_uuid in response:
-            response = clover.post("/v2/merchant/{mId}/orders/{orderId}"
-                "/line_items/{lineItemId}/adjustments", 
-                { "type" : "DISCOUNT", "percentage" : 100}, 
-                mId = merchant_id, orderId = order_id, 
-                lineItemId=line_item_uuid)
+        #Make the line item free
+        clover.post("/v2/merchant/{mId}/orders/{orderId}"
+            "/line_items/{lineItemId}/adjustments", 
+            { "adjustment" : { "type" : "DISCOUNT", "percentage" : 100} }, 
+            orderId = order_id, 
+            lineItemId=response["uuid"])
 
     #return success/fail and new pricing
-    #TODO add change in pricing if rewards include discounts
-    return jsonify(status="success", total_amount=total_amount)
+    return jsonify(status="success")
     
 #Adds a reward for a merchant
 def add_reward_merchant():
@@ -861,9 +863,6 @@ def show_reward_props(merchant_id):
     if not inventory:
         inventory = {}
     inventory = json.dumps(inventory)
-
-    print rewards
-    print "\n\n"
 
     return render_template("show_reward_props.html",
             reward_type=reward_props.reward_type,
