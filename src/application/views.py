@@ -232,12 +232,26 @@ def warmup():
 def render_order_merchlink(merch_link, disable_order_button=False):
     if (merch_link and merch_link.curr_order != None and
         len(merch_link.curr_order.items) > 0):
+        #Find total cost
+        total_cost = 0
+        for item in merch_link.curr_order.items:
+            total_cost += item.quantity * item.price
+
+        rewards = find_rewards_customer(merch_link.customer,
+                Merchant.query(Merchant.key == merch_link.merchant).get().id, 
+                total_cost)
+
+        #Set to none if there are none
+        if rewards == []:
+            rewards = None
+
         return render_order(merch_link.curr_order,
                             disable_order_button,
-                            merch_link.merchant.get())
+                            merch_link.merchant.get(), rewards=rewards)
     return ""
 
-def render_order(order, disable_order_button=False, merchant=None):
+def render_order(order, disable_order_button=False, merchant=None, 
+        rewards=None):
     return render_template('order.html', format_price=format_price,
                            **locals())
 
@@ -355,6 +369,14 @@ def finish_order(merchant_id):
             return add_cc(merchant_id, uuid, total)
         resp = make_payment(uuid, total, merch_link)
         if (resp.result == "APPROVED"):
+            #Give the customer reward points
+            #Whether or not they are enabled is checked in the function
+            new_points = calculate_reward_points(total, 
+                    RewardProperties.query(
+                        RewardProperties.key == merchant.reward_props).get())
+            merch_link.rewards_points += new_points
+            merch_link.put()
+
             flash("Order placed. Payment Successful.", 'success')
             return redirect(url_for('customer_home'))
         elif (resp.result == "DECLINED"):
@@ -503,15 +525,6 @@ def make_payment(orderId, amount, merch_link):
         customer.qr_code = str(uuid.uuid4())
         customer.put()
 
-        #Give them points
-        new_points = calculate_reward_points(amount, 
-                RewardProperties.query(
-                    RewardProperties.key == merchant.reward_props).get())
-
-
-        merch_link.rewards_points += new_points
-        merch_link.put()
-
     return resp
 
 def complete_order(order_id):
@@ -574,6 +587,14 @@ def charge():
 
         resp = make_payment(order_id, amount, merch_link)
         if(resp.result == "APPROVED"):
+            #Give the customer reward points
+            #Whether or not they are enabled is checked in the function
+            new_points = calculate_reward_points(amount, 
+                    RewardProperties.query(
+                        RewardProperties.key == merchant.reward_props).get())
+            merch_link.rewards_points += new_points
+            merch_link.put()
+
             return jsonify(status="payed")
         elif (resp.result == "DECLIND"):
             return jsonify(status="declined")

@@ -34,4 +34,19 @@
     </th>
   </tr>
 </table>
+
+{% if rewards %}
+<h2>Rewards</h2>
+<table class="table">
+  <tr>
+    <th>Item(s)</th>
+  </tr>
+  {% for reward in rewards %}
+  <tr>
+    <td>{{reward.name}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
 {% endif %}
