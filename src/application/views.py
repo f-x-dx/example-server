@@ -103,6 +103,11 @@ def load_inventory(redirect_to_home=True):
 
 @login_required
 def clover_callback():
+    """
+    This will be called after linking a merchant, and this function does the
+    set up on this server for the newly linked merchant. Afterwards, the 
+    user is returned to merchant home
+    """
     account = Account.get_account()
     code = request.args.get('code')
     merchant_id = request.args.get('merchant_id')
@@ -168,6 +173,7 @@ format_price = lambda price: "${}.{:02}".format(price / 100, price % 100)
 
 @login_required
 def order(merchant_id):
+    """Sets up variables and goes to inventory page from customer home"""
     merchant = Merchant.get_by_id(merchant_id)
 
     if not merchant:
@@ -198,6 +204,7 @@ def order(merchant_id):
 
 @login_required
 def show_inventory(merchant_id):
+    """Shows inventory of a merchant from merchant home"""
     merchant = Merchant.get_by_id(merchant_id)
 
     if not merchant:
@@ -232,6 +239,7 @@ def warmup():
     return ''
 
 def render_order_merchlink(merch_link, disable_order_button=False):
+    """Displays current order for a merchant if one exists"""
     if (merch_link and merch_link.curr_order != None and
         len(merch_link.curr_order.items) > 0):
         #Find total cost
@@ -259,6 +267,7 @@ def render_order(order, disable_order_button=False, merchant=None,
 
 @login_required
 def add_item(merchant_id):
+    """Handles adding an item to an order"""
     merch_link = MerchLink.get_merchlink(merchant_id)
     item_id = request.args["id"]
     try:
@@ -270,6 +279,7 @@ def add_item(merchant_id):
 
 @login_required
 def remove_item(merchant_id):
+    """Removes an item from an order"""
     merch_link = MerchLink.get_merchlink(merchant_id)
     item_id = request.args["id"]
     merch_link.remove_item(item_id)
@@ -277,6 +287,7 @@ def remove_item(merchant_id):
 
 @login_required
 def place_order(merchant_id):
+    """Returns the details of an order and places it if method == POST"""
     merch_link = MerchLink.get_merchlink(merchant_id)
     merchant = merch_link.get_merchant()
     if request.method == 'POST':
@@ -309,6 +320,7 @@ def format_time(time):
     return time + ' on ' + date
 
 def get_orders(merchant_id):
+    """Returns json representation of a merchant's orders"""
     #within_last = request.args['time']
     merchant = Merchant.query(Merchant.id==merchant_id).get()
     py_orders = Order.query(ndb.AND(Order.merchant==merchant.key,
@@ -327,6 +339,7 @@ def get_orders(merchant_id):
 
 @login_required
 def order_page(order_id):
+    """Returns order"""
     try:
         # TODO: Check that the order_id belongs to the customer or merchant
         #       before rendering it
@@ -339,6 +352,11 @@ def order_page(order_id):
 
 @login_required
 def finish_order(merchant_id):
+    """
+    Creates the order on Clover and then pays for it. Gives customer reward
+    points if rewards are enabled for the merchant. Finally returns to customer
+    home
+    """
     try:
         merch_link = MerchLink.get_merchlink(merchant_id)
         if(merch_link.curr_order == None or len(merch_link.curr_order.items)==0):
@@ -394,6 +412,7 @@ def finish_order(merchant_id):
 
 @login_required
 def customer_home():
+    """Brings user to customer home"""
     user = users.get_current_user()
     customer = Customer.get_or_insert(user.user_id(), user=user,
             access_token=str(uuid.uuid4()))
@@ -412,6 +431,7 @@ def get_pebble_token():
     return render_template('display_pebble.html', token=customer.access_token)
 
 def refresh_access_token():
+    """Gives new access token to customer"""
     old_token = request.json['token']
     customer = Customer.query(Customer.access_token==old_token).get()
     customer.access_token = str(uuid.uuid4());
@@ -419,6 +439,7 @@ def refresh_access_token():
     return jsonify(token=customer.access_token)
 
 def get_qr_from_token():
+    """Returns the qr code given access token"""
     old_token = request.json['token']
     customer = Customer.query(Customer.access_token==old_token).get()
     customer.access_token = str(uuid.uuid4());
@@ -477,6 +498,7 @@ def remove_cc(merchant_id):
     return render_template('customer_home.html')
 
 def record_payment():
+    """Updates ndb with the payment information"""
     merchant_id = request.json['merchant']
     last_four = request.json['last_four']
     amount = request.json['amount']
@@ -537,6 +559,7 @@ def complete_order(order_id):
 
 @login_required
 def show_qr_code():
+    """Shows the qr code page"""
     current_user = users.get_current_user()
 
     query = Customer.query(Customer.user == current_user)
@@ -552,8 +575,11 @@ def show_qr_code():
 
     return render_template("qr_code.html", qr_code=qr_code)
 
-#Charge a customer using QR code and merchant id
 def charge():
+    """
+    This is the endpoint that the example tender uses; it will charge a 
+    customer given their QR code and give them reward points if they qualify
+    """
     try:
         json_in = request.get_json(silent = True)
         #check to make sure json is ok
@@ -605,9 +631,11 @@ def charge():
     except Exception as e:
         print(e)
 
-#Displays rewards points that a customer has accumulated
 @login_required
 def show_reward_points():
+    """
+    Displays rewards points that a customer has accumulated. No longer used
+    """
     customer = Customer.query(Customer.user == users.get_current_user()).get()
     merch_links = customer.get_merchant_links()
     ret = []
@@ -631,9 +659,11 @@ def show_reward_points():
     return render_template("show_reward_points.html",
             merchants=ret)
 
-# Returns list of rewards that should be applied given current customer id,
-# merchant id, and items in the order
 def find_rewards_customer(customer_key, merchant_id, total_amount):
+    """
+    Returns list of rewards that should be applied given current customer id,
+    merchant id, and items in the order
+    """
     #Find merchant
     merchant = Merchant.query(Merchant.id == merchant_id).get()
     if not merchant:
@@ -674,8 +704,8 @@ def find_rewards_customer(customer_key, merchant_id, total_amount):
 
     return ret
 
-#Finds the amount of points earned by the items
 def calculate_reward_points(total_amount, reward_props):
+    """Finds the amount of points earned by the items"""
     #If no rewards
     if reward_props.reward_type == RewardProperties.TYPE_NONE:
         return 0
@@ -692,11 +722,11 @@ def calculate_reward_points(total_amount, reward_props):
 
     return 0
 
-""" 
-Returns json representation of rewards that customer will get if he/she 
-goes through with the order
-"""
 def get_rewards_customer():
+    """ 
+    Returns json representation of rewards that customer will get if he/she 
+    goes through with the order
+    """
     qr_code = request.args.get("qr_code")
     merchant_id = request.args.get("merchant_id")
     total_amount = int(request.args.get("total_amount"))
@@ -713,7 +743,7 @@ def get_rewards_customer():
     
     rewards = find_rewards_customer(customer.key, merchant_id, total_amount)
 
-    return jsonify(status="success", rewards=rewards)
+    return jsonify(status="OK", rewards=rewards)
 
 #Gives rewards to customer
 def apply_rewards_customer():
@@ -745,7 +775,7 @@ def apply_rewards_customer():
             lineItemId=response["uuid"])
 
     #return success/fail and new pricing
-    return jsonify(status="success")
+    return jsonify(status="OK")
     
 #Adds a reward for a merchant
 def add_reward_merchant():
@@ -820,7 +850,7 @@ def remove_reward_merchant():
             merchant_section="true", json_inventory=inventory)
 
 #Sets reward properties for a merchant
-def set_reward_props():#merchant_id, reward_type, minimum_price)
+def set_reward_props():
     merchant_id = request.form["merchant_id"]
     reward_type = int(request.form["reward_type"])
     minimum_price = int(request.form["minimum_price"])
@@ -892,3 +922,35 @@ def show_reward_props(merchant_id):
             minimum_price=reward_props.minimum_price, rewards=rewards,
             merchant_id=merchant_id, changed=0,
             merchant_section="true", json_inventory=inventory)
+
+@login_required
+def reset_rewards_merchant():
+    """
+    Resets rewards for all customers of this merchant
+    """
+    account = Account.get_account()
+    merchant = Merchant.query(Merchant.key == account.merchant).get()
+    merchlinks = MerchLink.query(MerchLink.merchant == merchant.key)
+    for merch_link in merchlinks:
+        merch_link.rewards_points = 0
+        merch_link.put()
+
+    reward_props = RewardProperties.query(
+            RewardProperties.key == merchant.reward_props).get()
+
+    #Get inventory
+    inventory = merchant.inventory
+    #Set to empty dict if there's no inventory
+    if not inventory:
+        inventory = {}
+    inventory = json.dumps(inventory)
+
+    rewards = merchant.get_rewards()
+
+    return render_template("show_reward_props.html",
+           reward_type=reward_props.reward_type,
+           minimum_price=reward_props.minimum_price, rewards=rewards,
+           merchant_id=merchant.id, changed=1,
+           merchant_section="true", json_inventory=inventory)
+
+

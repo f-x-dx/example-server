@@ -22,6 +22,8 @@
         <tr>
           <th>Merchant</th>
           <th>Credit Card</th>
+          <th>Reward Points</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -29,6 +31,7 @@
         <tr>
           <td>{{ merchlink.get_merchant().name }}</td>
           <td>*{{ merchlink.last_four }}</td>
+          <td>{{ merchlink.rewards_points }}</td>
           <td><form method="post" action="{{ url_for('remove_cc',
                                           merchant_id=merchlink.merchant.get().id) }}">
               <button class="btn">Remove</button>
@@ -80,22 +83,6 @@
     </table>
     {% else %}
     <p>No Recent Payments</p>
-    {% endif %}
-
-    <h2>My Reward Points</h2>
-    {% if linked_merchants %}
-    <ul class="dropdown-menu" role="menu">
-      {% for merch_link in linked_merchants %}
-      <li>
-        <a tabindex="-1" href=
-           "{{url_for('show_reward_points',
-            merchant_id=merch_link.merchant.get().id)}}">
-          {{merch_link.get_merchant().name}}
-        </a>
-      </li>
-      {% endfor %}
-    {% else %}
-    <p>Start ordering from merchants to earn rewards.</p>
     {% endif %}
   </div>
 

@@ -48,7 +48,8 @@
 <form action="../set_reward_props" method="POST" onSubmit="return checkForm();">
   <h1>Rewards </h1>
   <h2>Settings </h2>
-  <p>Type:
+  <p>
+  Type:
   <br>
   <input id="amount_button" type="radio" name="reward_type" value="1">
   <label for="amount_button">Points by amount spent (1 point per cent spent)</label>
@@ -65,8 +66,14 @@
   <input type="hidden" name="merchant_id" value="{{merchant_id}}">
   <br>
   <input class="btn" type="submit" value="Save" >
-</p>
+  </p>
 </form>
+
+<form action="{{url_for('reset_rewards_merchant')}}" method="POST">
+  <input class="btn" type="submit" value="Reset points">
+</form>
+
+<br>
 
 <h2>Current Rewards</h2>
 <table class="table table-bordered">

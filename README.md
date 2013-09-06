@@ -41,28 +41,28 @@ If you don't already have an account on http://www.clover.com please create one.
 
 Now, click on "Create New App" on the right. You can name the app anything you would like, as long as the name is available. A checkmark will show if you hit check availability and the name is available. 
 
-The same applies for the package name, which you will need if you want to also test the Android part of the app. Note that you will need to rename the package name from within the Android application. If you use Android Studio, you should be able to do this by going to the directory "com.clover.cloverexample" in Android Studio, right clicking, and then selecting Refactor->Rename and giving it a name of your choice. 
+The same applies for the package name, which you will need if you want to also test the Android part of the app. Note that you will need to rename the package name from within the Android application to match the name you give here. If you use Android Studio, you should be able to do this by going to the directory "com.clover.cloverexample" in Android Studio, right clicking, and then selecting Refactor->Rename and giving it a name of your choice. 
 
-Make sure that the package name you give it and the one you set your app to be on the Clover website are the same. Now hit "Create".
+Make sure that the package name you give it and the one you set your app to be on the Clover website are the same and then hit "Create".
 
 You should be on the Edit App page now. 
 
-In the App Settings section, put 
+In the App Settings section, under activation url put 
 
 	http://localhost:8080/clover_callback
 	
-for the activation url. Also, put in
+Also, under domain put 
 
 	localhost:8080
 	 
-for the domain. Select both Read and Write for all options except Employees.
+Select both Read and Write for all options except Employees.
 
 Hit Save Changes
 
 You should be able to see the app and a debug version of it now in Your Apps. 
 
 ####Publishing the app
-Finally, let's actually publish the app! Click the Publish To My Merchants button on the right of the debug version of the app.  
+Finally, let's actually publish the app! Click the "Publish To My Merchants" button on the right of the debug version of the app.  
 	
 If you want to use the Android part of this application, then you will need to generate an APK and drag it into the box under "Upload Android APK". If you haven't cloned the Android repository already, please do so now and then generate an APK. If you use Android Studio, you can do so by going to Build->Generate Signed APK.
 
@@ -70,13 +70,16 @@ If you want to use the Android part of this application, then you will need to g
 
 Hopefully now your app is published! You will have to set up your local server to use the APP ID and App Secret given to your published app.
 
-For each of your apps, below the description(defaults to "Free"), you should be able to see the APP ID and App Secret on the "Your Apps" page. We will need to set your local server to use the APP ID and App Secret of the debug version of your newly published app. 
+On the "Your Apps" page, for each of your apps, you should be able to see the APP ID and App Secret. We will need to set your local server to use the APP ID and App Secret of the debug version of your newly published app. 
 
 Use your favorite text editor to open 
 
 	<cloned_server_dir>/src/application/config.py
 	
-The first two lines should be assigning APP_SECRET and APP_ID. You should change that to assign to the APP ID and APP SECRET that you were given. 
+The first two lines should be assigning APP_SECRET and APP_ID. You should change that to assign to the APP ID and APP SECRET that you were given. For example, if your APP ID is "HPWE32KXQFZAM" and App Secret is "bbb3422c-1703-5049-cb9f-bfd3a6918937" then you would want your config.py file to have 
+
+	APP_SECRET = "bbb3422c-1703-5049-cb9f-bfd3a6918937"
+	APP_ID = "HPWE32KXQFZAM"
 
 And with all of that, you should finally be ready to start the server!
 
@@ -85,11 +88,9 @@ First, let's go to the application directory at
 
 	<cloned_server_dir>/src
 	
-If this is your first time starting the server then you will need to run the generate_keys script. You can do so by entering
+If this is your first time starting the server then you will need to run the generate_keys script. You can do so with the command
 
 	python application/generate_keys.py
-
-You may need to grant execute permissions first.
 
 To actually start the server, enter
 
@@ -108,7 +109,7 @@ Test that the server is working by going to
 in your browser. 
 
 ####Linking a merchant
-Before you can actually do anything with the app, you have to link merchants. Click "Merchant" at the very top of the web page go to the Merchant side of things. Then, click "Link Merchant" at the right. 
+Before you can actually do anything with the app, you have to link a merchant. On localhost:8080, click "Merchant" at the very top of the web page. Then, click "Link Merchant" at the right. 
 
 Select the merchant you want to link(if you didn't make any extra ones there should only be one). Then, "Click Install App" and afterwards "Accept & Install".
 
@@ -117,19 +118,15 @@ If everything went smoothly, you should be back on the merchant home page with t
 You can try playing around on the web page now that you hvae a linked merchant, or if you want to try the Android code, you can continue to the Android setup section.
 
 ####Android
-On the tablet, open "Apps". Find the app that you published, click it
+If you are using a device registered under the same merchant that you installed the app for, then the app should have been installed automatically. You can check that the app was installed by going to "Apps" and clicking on it. If it was installed, there should be an option to open it.
 
-The example tender we are using needs a QR code reader, so you will need to install an app to read QR codes. We recommend zxing which you can download from here:
+However, the app relies on zxing's QR code scanner so you will need to install that for the example tender to work. You can download that from here:
 
 	https://code.google.com/p/zxing/downloads/list
 	
 You want to download "BarcodeScanner". After downloading it, just use adb to install it with 
 
 	adb install <apk file name>
-	
-As of this writing, it would be 
-
-"adb install BarcodeScanner4.4.apk"
 
 That concludes the installation!
 

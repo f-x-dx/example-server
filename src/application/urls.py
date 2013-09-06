@@ -113,20 +113,30 @@ app.add_url_rule("/show_reward_points", "show_reward_points",
 app.add_url_rule("/show_reward_props/<merchant_id>", "show_reward_props",
                  view_func=views.show_reward_props, methods=["GET"])
 
+#Changes reward properties for a merchant
 app.add_url_rule("/set_reward_props", "set_reward_props",
                  view_func=views.set_reward_props, methods=["POST"])
 
+#Adds a reward for a merchant
 app.add_url_rule("/add_reward_merchant", "add_reward_merchant",
         view_func=views.add_reward_merchant, methods=["POST"])
 
+#Resets the reward points for all customers of this merchant
+app.add_url_rule("/reset_rewards_merchant", "reset_rewards_merchant",
+        view_func=views.reset_rewards_merchant, methods=["POST"])
+
+#Removes a reward for a merchant
 app.add_url_rule("/remove_reward_merchant", "remove_reward_merchant", 
         view_func=views.remove_reward_merchant, methods=["POST"])
 
+#Returns the rewards a customer qualifies for
 app.add_url_rule("/get_rewards_customer", "get_rewards_customer", 
         view_func=views.get_rewards_customer, methods=["GET"])
 
+#applies the rewards to a customer's order
 app.add_url_rule("/apply_rewards_customer", "apply_rewards_customer",
         view_func=views.apply_rewards_customer, methods=["POST"])
+
 
 ## Error handlers
 # Handle 404 errors
