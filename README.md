@@ -4,35 +4,35 @@ example-server
 ##Description
 This is an application that provides an order ahead functionality, a loyalty program, and a custom tender type(paying by QR code). This is meant to be an example to show how to use the Clover APIs. The example itself uses Google App Engine for the server end of things, and also has an Android component. 
 
-If you would like to try out the custom tender, you will also need to clone the example-android repository from here:
+If you would like to try out the custom tender, you will also need to clone the example-android repository from 
 
 	https://github.com/clover/example-android
 
 ##Installation
 
 ####Git
-If you haven't already, please install git from: 
+If you haven't already, please install git from
 
 	https://github.com/
 
 ####Cloning
 Clone this repository to a directory of your choice. We will refer to the directory you cloned it to as <cloned_server_dir>.
 
-If you would like to play with the Android side of things, you will also need to clone the Android repository, which you can find here:
+If you would like to play with the Android side of things, you will also need to clone the Android repository, which you can find at
 
 	https://github.com/clover/example-android
 	
 We will refer to the Android repository directory as <cloned_android_dir>.
 
 ####Google App Engine
-This project uses Google App Engine for Python, so if you don't have it you will need to install it. You can get it here: 
+This project uses Google App Engine for Python, so if you don't have it you will need to install it. You can get it at
 
 	https://developers.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python
 	
 We recommend you let it generate the symlinks when it asks since we will be using it here. 
 
 ####Python
-In case it wasn't obvious from the Google App Engine section, this project uses Python. Specifically, this project was tested on Python 2.7. You can get it here:
+In case it wasn't obvious from the Google App Engine section, this project uses Python. Specifically, this project was tested on Python 2.7. You can get it at
 
 	http://www.python.org/download/
 
@@ -102,14 +102,15 @@ You can use the Google App Engine Launcher instead also, with directions at
 
 The reason you will need to set the host to "0.0.0.0" is to allow other devices on your network to be able to connect to the server, which is going to be required for the tablet device. If you aren't planning on using the Android application, then you can leave the command out.
 
-Test that the server is working by going to 
+Test that the server is working by using your browser to navigate to
 
 	localhost:8080 
 	
-in your browser. 
 
 ####Linking a merchant
-Before you can actually do anything with the app, you have to link a merchant. On localhost:8080, click "Merchant" at the very top of the web page. Then, click "Link Merchant" at the right. 
+If you aren't there already, go to localhost:8080. If you see a login page, you can leave the defaults and log in.
+
+Before you can actually do anything with the app, you have to link a merchant. Click "Merchant" at the very top of the web page. Then, click "Link Merchant" at the right. 
 
 Select the merchant you want to link(if you didn't make any extra ones there should only be one). Then, "Click Install App" and afterwards "Accept & Install".
 
