@@ -41,7 +41,7 @@ If you don't already have an account on http://www.clover.com please create one.
 
 Now, click on "Create New App" on the right. You can name the app anything you would like, as long as the name is available. A checkmark will show if you hit check availability and the name is available. 
 
-The same applies for the package name, which you will need if you want to also test the Android part of the app. Note that you will need to rename the package name from within the Android application to match the name you give here. If you use Android Studio, you should be able to do this by going to the directory "com.clover.cloverexample" in Android Studio, right clicking, and then selecting Refactor->Rename and giving it a name of your choice. 
+The same applies for the package name, which you will need if you want to also test the Android part of the app. Note that you will need to rename the package name from within the Android application to match the name you give here. 
 
 Make sure that the package name you give it and the one you set your app to be on the Clover website are the same and then hit "Create".
 
@@ -80,6 +80,12 @@ The first two lines should be assigning APP_SECRET and APP_ID. You should change
 
 	APP_SECRET = "bbb3422c-1703-5049-cb9f-bfd3a6918937"
 	APP_ID = "HPWE32KXQFZAM"
+	
+Next, change the TENDER_KEY to be the entire package name you gave to your Android app, for example, 
+
+	com.clover.example
+
+Also, change the TENDER_NAME to what you would like to show up on the Register when users are given the option to pay.
 
 And with all of that, you should finally be ready to start the server!
 
@@ -114,13 +120,15 @@ Before you can actually do anything with the app, you have to link a merchant. C
 
 Select the merchant you want to link(if you didn't make any extra ones there should only be one). Then, "Click Install App" and afterwards "Accept & Install".
 
-If everything went smoothly, you should be back on the merchant home page with the merchant you linked showing. 
+If everything went smoothly, you should be back on the merchant home page with the merchant you linked showing, and you can go to the next section. 
+
+If you could not create the merchant tender, it's likely because the tender key that you set is already taken. Try setting TENDER_KEY to something else in "config.py". Unfortunately, you will have to change the package name of the Android application, regenerate the APK, change the package name on www.clover.com, and republish the application with the new APK. 
 
 If something failed and you need to relink the merchant, then make sure that you go to your merchant at 
 
 	https://www.clover.com
 	
-Then, Merchants in the top right and select the merchant you want to link if it isn't already selected. Then, go to Apps, also on the right, and finally go to Installed Apps and uninstall the app. Now you should be able to relink the merchant again.
+Then, Merchants in the top right and select the merchant you want to link if it isn't already selected. Then, go to Apps, also on the right, and finally go to "Installed Apps" and uninstall the app. Now you should be able to relink the merchant again.
 
 You can try playing around on the web page now that you hvae a linked merchant, or if you want to try the Android code, you can continue to the Android setup section.
 
