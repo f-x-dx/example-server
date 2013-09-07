@@ -1,7 +1,7 @@
 APP_SECRET = "<YOUR_APP_SECRET_HERE>"
 APP_ID = "<YOUR_APP_ID_HERE>"
 
-TENDER_KEY = "com.clover.cloverexample"
-TENDER_NAME = "Example Tender"
+TENDER_KEY = "<YOUR_TENDER_KEY_HERE>"
+TENDER_NAME = "<YOUR_TENDER_NAME_HERE>"
 
 base_url = "https://www.clover.com"
