@@ -81,13 +81,7 @@
 {% elif merchant %}
 <dd>No Recent Payments</dd>
 {% else %}
-<div class="instructions"><span>Link a merchant to see your inventory here.</span>
-	<ol>
-		<li>Create an app on the <a href="{{ base_url }}/manage" target="_blank">Clover Dashboard</a>. It needs x, y, z permissions. //todo: fill in</li>
-		<li>Copy the App ID and App Secret to <code>views.py</code>. //todo: move to config file.</li>
-		<li><a class="btn btn-success" id="link-merchant-btn" href="{{ login_url }}">
-	      Link Merchant
-	    </a> and install the app.
+<div class="instructions"><span>Link a merchant to see your inventory and allow customers to order ahead.</span><br/><br/>
 </div>
 {% endif %}
 </dl>
