@@ -128,7 +128,7 @@ If something failed and you need to relink the merchant, then make sure that you
 
 	https://www.clover.com
 	
-Then, Merchants in the top right and select the merchant you want to link if it isn't already selected. Then, go to Apps, also on the right, and finally go to "Installed Apps" and uninstall the app. Now you should be able to relink the merchant again.
+Then, click Merchants in the top right and select the merchant you want to link if it isn't already selected. Then, go to Apps, also on the right, and finally go to "Installed Apps" and uninstall the app. Now you should be able to relink the merchant again.
 
 You can try playing around on the web page now that you hvae a linked merchant, or if you want to try the Android code, you can continue to the Android setup section.
 
